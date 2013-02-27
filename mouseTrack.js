@@ -2,12 +2,14 @@ var mousedown = false
 var mx,my,nx,ny,count,phi
 var move="", omove, tmove
 var pi =3.14159
+var moved=true
 
 document.onmousedown = function(event)
 {
 	//right mouse click
-	if(event.which == 3)
+	if(event.which == 3 && moved)
 	{
+		moved=true
 		count = 0
 		my = event.pageX;
 		mx = event.pageY;
@@ -20,15 +22,15 @@ document.onmouseup = function(event)
 	//right mouse click
 	if(event.which == 3)
 	{
+		mousedown = false
 		if(move != "")
 		{
 			exeFunc()
-			mousedown = false
 		}
 		else
 		{
-			var contextMenu = $find("<%= RadMenu1.ClientID %>");
-			contextMenu.show(args);
+			moved=false
+			document.trigger({type: 'mousedown',which: 3});
 		}
 	}
 };
@@ -75,14 +77,15 @@ function exeFunc()
 		 window.open('','_self',''); 
 		 self.close()
 	}
+	move=""
 }
 
 
 document.oncontextmenu = function()
 {
-// 	if(move != "")
-// 		move = ""
+	if(moved)
 		return false;
-// 	else
-// 		return true
+	else
+		moved=true
+		return true
 };
