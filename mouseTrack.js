@@ -78,10 +78,10 @@ document.onmousemove = function(event)
 	{
 		ny = event.pageX;
 		nx = event.pageY;
-		draw(ny,nx)
 		var r = Math.sqrt(Math.pow(nx-mx,2)+Math.pow(ny-my,2))
-		if(r > 9)
+		if(r > 16)
 		{
+			draw(ny,nx)
 			phi = Math.atan2(ny-my,nx-mx)
 			if(phi < 0) phi += 2.*pi
 			if(phi >= pi/4. && phi < 3.*pi/4.)
