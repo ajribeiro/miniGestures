@@ -113,6 +113,7 @@ function exeFunc()
 		 window.open('','_self',''); 
 		 self.close()
 	}
+	else if(move == "rightdownleft") window.location.reload()
 	move=""
 }
 
