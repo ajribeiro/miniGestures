@@ -3,38 +3,38 @@ var mx,my,nx,ny,lx,ly,count,phi
 var move="", omove, tmove
 var pi =3.14159
 var moved=true
-var canvas, canvasContainer
+var canvas
 
 function createCanvas()
 {
-      canvas = document.createElement('canvas');    
-	  canvas.style.width=document.width
-	  canvas.style.height=document.height
-		canvas.width=document.width
-		canvas.height=document.height	  
-		canvas.style.left="0px";
-		canvas.style.top="0px";
-      canvas.style.overflow = 'visible';
-      canvas.style.position = 'absolute';
-	  canvas.style.zIndex="1000"
+	canvas = document.createElement('canvas');
+	canvas.id = "gestCanvas"
+	canvas.style.width=document.width
+	canvas.style.height=document.height
+	canvas.width=document.width
+	canvas.height=document.height	  
+	canvas.style.left="0px";
+	canvas.style.top="0px";
+	canvas.style.overflow = 'visible';
+	canvas.style.position = 'absolute';
+	canvas.style.zIndex="1000"
 }
 function draw(x,y)
 {
-	var ctx = canvas.getContext('2d');
-	// alert('draw')
-	// alert(ctx)
-	// ctx.style.zIndex  = 1000"
+	var ctx = document.getElementById('gestCanvas').getContext('2d');
 	ctx.beginPath();
 	ctx.strokeStyle="ff3300"
 	ctx.lineWidth=3
 	ctx.moveTo(lx,ly);
 	ctx.lineTo(x,y);
 	ctx.stroke()
-    lx=x
+  lx=x
 	ly=y
 }
 document.onmousedown = function(event)
 {
+// 	if(event.which == 3)
+		
 	//right mouse click
 	if(event.which == 3 && moved)
 	{
@@ -55,8 +55,12 @@ document.onmouseup = function(event)
 	//right mouse click
 	if(event.which == 3)
 	{
-		document.body.removeChild(canvas)
-		canvas.width = canvas.width;
+		cvs = document.getElementById('gestCanvas')
+		if(cvs)
+		{
+			document.body.removeChild(cvs)
+			cvs.width = cvs.width;
+		}
 		mousedown = false
 		if(move != "")
 		{
@@ -65,7 +69,11 @@ document.onmouseup = function(event)
 		else
 		{
 			moved=false
-			document.trigger({type: 'mousedown',which: 3});
+			chrome.extension.sendMessage({msg: "context"}, 
+			function(response)
+			{
+				console.log(response.resp);
+			});
 		}
 	}
 };
@@ -105,24 +113,38 @@ document.onmousemove = function(event)
 
 function exeFunc()
 {
-	if(move == "left") window.history.back()
-	else if(move == "right") window.history.forward()
-	else if(move == "up") window.open()
+	if(move == "left")
+	{
+		window.history.back()
+	}
+	else if(move == "right")
+	{
+		window.history.forward()
+	}
+	else if(move == "up")
+	{
+		chrome.extension.sendMessage({msg: "newtab"}, 
+			function(response)
+			{
+				console.log(response.resp);
+			});
+	}
  	else if(move == "updown") 
 	{
-		 window.open('','_self',''); 
-		 self.close()
+		chrome.extension.sendMessage({msg: "closetab"}, 
+			function(response)
+			{
+				console.log(response.resp);
+			});
 	}
-	else if(move == "rightdownleft") window.location.reload()
-	move=""
+	else if(move == "rightdownleft")
+	{
+		window.location.reload()
+	}
 }
 
 
 document.oncontextmenu = function()
 {
-	if(moved)
-		return false;
-	else
-		moved=true
-		return true
+	return false;
 };
