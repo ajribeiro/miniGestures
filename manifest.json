@@ -2,8 +2,7 @@
 "name": "superGestures",
 "manifest_version": 2,
   "permissions": [
-    "tabs",
-		"contextMenus"
+    "tabs"
   ],
   "background": {
     "scripts": ["background.js"]

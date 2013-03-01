@@ -21,6 +21,7 @@ var move="", omove
 var pi =3.14159
 var suppress=1
 var canvas
+var link
 
 function createCanvas()
 {
@@ -74,13 +75,6 @@ document.onmousemove = function(event)
 		var r = Math.sqrt(Math.pow(nx-mx,2)+Math.pow(ny-my,2))
 		if(r > 16)
 		{
-			if(moved == false)
-			{
-				createCanvas()
-				document.body.appendChild(canvas);
-			}
-			moved=true
-			draw(ny,nx)
 			phi = Math.atan2(ny-my,nx-mx)
 			if(phi < 0) phi += 2.*pi
 			if(phi >= pi/4. && phi < 3.*pi/4.)
@@ -91,13 +85,26 @@ document.onmousemove = function(event)
 				var tmove="L"
 			else if(phi >= 7.*pi/4. || phi < pi/4.)
 				var tmove="D"
-			mx = nx
-			my = ny
 			if(tmove != omove)
 			{
 				move += tmove
+				if(moved)
+					link.href='Gesture: '+move
 				omove = tmove
 			}
+			if(moved == false)
+			{
+				
+				createCanvas()
+				link = document.createElement('a');
+				link.href='Gesture: '+move
+				link.appendChild(canvas)
+				document.body.appendChild(link);
+			}
+			moved=true
+			draw(ny,nx)
+			mx = nx
+			my = ny
 		}
 	}
 };
@@ -116,7 +123,7 @@ document.onmouseup = function(event)
 			cvs = document.getElementById('gestCanvas')
 			if(cvs)
 			{
-				document.body.removeChild(cvs)
+				document.body.removeChild(link)
 				cvs.width = cvs.width;
 			}
 			exeFunc()
@@ -125,15 +132,7 @@ document.onmouseup = function(event)
 		{
 			--suppress
 			console.log('no move '+suppress)
-			console.log($('#target'))
-			document.onmousedown(which=3)
-// 			document.onclick(which=3)
-// 			document.onmouseup(which=3)
-// 			evt=document.createEvent('MouseEvents')
-// 			evt.initMouseEvent('contextmenu', true, true,
-//          document.defaultView, 1, 0, 0, 0, 0, false,
-//          false, false, false, 2, null);
-// 			document.trigger({type: 'mousedown',which: 3});
+			$('#target').mousedown(which=3);
 		}
 	}
 };
