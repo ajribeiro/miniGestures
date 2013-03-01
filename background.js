@@ -15,7 +15,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.   
 */
 
-chrome.extension.onMessage.addListener(
+chrome.extension.onMessage.addListener
+(
   function(request, sender, sendResponse) 
 	{
     if(request.msg == "newtab")
@@ -25,16 +26,13 @@ chrome.extension.onMessage.addListener(
 		}
     if(request.msg == "closetab")
 		{
-			chrome.tabs.getSelected(null, function(tab) {
-					chrome.tabs.remove(tab.id, function() { });
+			chrome.tabs.getSelected(null, function(tab) 
+			{
+					chrome.tabs.remove(tab.id);
 			});
       sendResponse({resp: "tab closed"});
 		}
-    if(request.msg == "context")
-		{
-			chrome.contextMenus.create({});
-      sendResponse({resp: "context open"});
-		}
 		sendResponse({resp: "probs"});
-  });
+  }
+);
 

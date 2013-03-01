@@ -15,11 +15,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.   
 */
 
-var mousedown = false
-var mx,my,nx,ny,lx,ly,count,phi
-var move="", omove, tmove
+var mousedown=false, moved=false
+var mx,my,nx,ny,lx,ly,phi
+var move="", omove
 var pi =3.14159
-var moved=true
+var suppress=1
 var canvas
 
 function createCanvas()
@@ -50,51 +50,19 @@ function draw(x,y)
 }
 document.onmousedown = function(event)
 {
-// 	if(event.which == 3)
-		
+	console.log('mousedown '+suppress)
 	//right mouse click
-	if(event.which == 3 && moved)
+	if(event.which == 3 && suppress)
 	{
-		createCanvas()
-		document.body.appendChild(canvas);
-		moved=true
-		count = 0
 		my = event.pageX;
 		mx = event.pageY;
 		lx = my
 		ly = mx
-		mousedown = true
+		move = ""
+		mousedown=true
+		moved=false
 	}
 };
-
-document.onmouseup = function(event)
-{
-	//right mouse click
-	if(event.which == 3)
-	{
-		cvs = document.getElementById('gestCanvas')
-		if(cvs)
-		{
-			document.body.removeChild(cvs)
-			cvs.width = cvs.width;
-		}
-		mousedown = false
-		if(move != "")
-		{
-			exeFunc()
-		}
-		else
-		{
-			moved=false
-			chrome.extension.sendMessage({msg: "context"}, 
-			function(response)
-			{
-				console.log(response.resp);
-			});
-		}
-	}
-};
-
 
 document.onmousemove = function(event)
 {
@@ -106,17 +74,23 @@ document.onmousemove = function(event)
 		var r = Math.sqrt(Math.pow(nx-mx,2)+Math.pow(ny-my,2))
 		if(r > 16)
 		{
+			if(moved == false)
+			{
+				createCanvas()
+				document.body.appendChild(canvas);
+			}
+			moved=true
 			draw(ny,nx)
 			phi = Math.atan2(ny-my,nx-mx)
 			if(phi < 0) phi += 2.*pi
 			if(phi >= pi/4. && phi < 3.*pi/4.)
-				tmove="right"
+				var tmove="R"
 			else if(phi >= 3.*pi/4. && phi < 5.*pi/4.)
-				tmove="up"
+				var tmove="U"
 			else if(phi >= 5.*pi/4. && phi < 7.*pi/4.)
-				tmove="left"
+				var tmove="L"
 			else if(phi >= 7.*pi/4. || phi < pi/4.)
-				tmove="down"
+				var tmove="D"
 			mx = nx
 			my = ny
 			if(tmove != omove)
@@ -128,17 +102,54 @@ document.onmousemove = function(event)
 	}
 };
 
+
+document.onmouseup = function(event)
+{
+	console.log('mouse is up '+suppress)
+	//right mouse click
+	if(event.which == 3)
+	{
+		console.log('suppress is '+suppress)
+		mousedown=false
+		if(moved)
+		{
+			cvs = document.getElementById('gestCanvas')
+			if(cvs)
+			{
+				document.body.removeChild(cvs)
+				cvs.width = cvs.width;
+			}
+			exeFunc()
+		}
+		else
+		{
+			--suppress
+			console.log('no move '+suppress)
+			console.log($('#target'))
+			document.onmousedown(which=3)
+// 			document.onclick(which=3)
+// 			document.onmouseup(which=3)
+// 			evt=document.createEvent('MouseEvents')
+// 			evt.initMouseEvent('contextmenu', true, true,
+//          document.defaultView, 1, 0, 0, 0, 0, false,
+//          false, false, false, 2, null);
+// 			document.trigger({type: 'mousedown',which: 3});
+		}
+	}
+};
+
+
 function exeFunc()
 {
-	if(move == "left")
+	if(move == "L")
 	{
 		window.history.back()
 	}
-	else if(move == "right")
+	else if(move == "R")
 	{
 		window.history.forward()
 	}
-	else if(move == "up")
+	else if(move == "U")
 	{
 		chrome.extension.sendMessage({msg: "newtab"}, 
 			function(response)
@@ -146,7 +157,7 @@ function exeFunc()
 				console.log(response.resp);
 			});
 	}
- 	else if(move == "updown") 
+ 	else if(move == "UD") 
 	{
 		chrome.extension.sendMessage({msg: "closetab"}, 
 			function(response)
@@ -154,7 +165,7 @@ function exeFunc()
 				console.log(response.resp);
 			});
 	}
-	else if(move == "rightdownleft")
+	else if(move == "RDL")
 	{
 		window.location.reload()
 	}
@@ -163,5 +174,15 @@ function exeFunc()
 
 document.oncontextmenu = function()
 {
-	return false;
+	console.log('ctx menu suppress is '+suppress)
+	if(suppress)
+	{
+		return false
+	}
+	else
+	{
+		console.log("open it");
+		suppress++
+		return true
+	}
 };
