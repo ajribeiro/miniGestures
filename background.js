@@ -20,18 +20,29 @@ chrome.extension.onMessage.addListener
   function(request, sender, sendResponse) 
 	{
     if(request.msg == "newtab")
-		{
-			chrome.tabs.create({})
-      sendResponse({resp: "tab open"});
-		}
+	{
+		chrome.tabs.create({})
+		sendResponse({resp: "tab open"});
+	}
     if(request.msg == "closetab")
+	{
+		chrome.tabs.getSelected(null, 
+		function(tab) 
 		{
-			chrome.tabs.getSelected(null, function(tab) 
-			{
-					chrome.tabs.remove(tab.id);
-			});
-      sendResponse({resp: "tab closed"});
-		}
+				chrome.tabs.remove(tab.id);
+		});
+		sendResponse({resp: "tab closed"});
+	}
+  if(request.msg == "colorCode")
+	{
+		console.log("color in background "+localStorage["colorCode"])
+		sendResponse({resp: localStorage["colorCode"]});
+	}
+  if(request.msg == "width")
+	{
+		console.log("width in background "+localStorage["width"])
+		sendResponse({resp: localStorage["width"]});
+	}
 		sendResponse({resp: "probs"});
   }
 );

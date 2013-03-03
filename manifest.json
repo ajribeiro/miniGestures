@@ -1,5 +1,5 @@
 {
-"name": "superGestures",
+"name": "miniGestures",
 "manifest_version": 2,
   "permissions": [
     "tabs"
@@ -16,5 +16,6 @@
     }
   ],
 "version": "0.1",
+"options_page": "options.html",
 "description": "a very simple mouse gestures program"
 }

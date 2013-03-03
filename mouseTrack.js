@@ -17,11 +17,12 @@
 
 var mousedown=false, moved=false
 var mx,my,nx,ny,lx,ly,phi
-var move="", omove
+var move="", omove=""
 var pi =3.14159
 var suppress=1
 var canvas
-var link
+var link, ls, myColor="red", myWidth=3
+var loaded=false
 
 function createCanvas()
 {
@@ -41,12 +42,13 @@ function draw(x,y)
 {
 	var ctx = document.getElementById('gestCanvas').getContext('2d');
 	ctx.beginPath();
-	ctx.strokeStyle="ff3300"
-	ctx.lineWidth=3
+	ctx.strokeStyle = myColor
+	console.log('from func'+myColor)
+	ctx.lineWidth = myWidth
 	ctx.moveTo(lx,ly);
 	ctx.lineTo(x,y);
 	ctx.stroke()
-  lx=x
+	lx=x
 	ly=y
 }
 document.onmousedown = function(event)
@@ -55,11 +57,17 @@ document.onmousedown = function(event)
 	//right mouse click
 	if(event.which == 3 && suppress)
 	{
+		if(! loaded)
+		{
+			loadOptions()
+			loaded=true
+		}
 		my = event.pageX;
 		mx = event.pageY;
 		lx = my
 		ly = mx
 		move = ""
+		omove=""
 		mousedown=true
 		moved=false
 	}
@@ -140,6 +148,7 @@ document.onmouseup = function(event)
 
 function exeFunc()
 {
+	console.log('exeFunc '+move)
 	if(move == "L")
 	{
 		window.history.back()
@@ -153,7 +162,14 @@ function exeFunc()
 		chrome.extension.sendMessage({msg: "newtab"}, 
 			function(response)
 			{
-				console.log(response.resp);
+				if(response != null)
+					console.log(response.resp);
+				else
+				{
+					console.log('problem executing open tab')
+					if(chrome.extension.lastError)
+						console.log(chrome.extension.lastError.message)
+				}
 			});
 	}
  	else if(move == "UD") 
@@ -185,3 +201,25 @@ document.oncontextmenu = function()
 		return true
 	}
 };
+
+function loadOptions(name)
+{
+	chrome.extension.sendMessage({msg: "colorCode"}, 
+		function(response) 
+		{
+			if(response)
+				myColor = response.resp
+			else
+				console.log('error getting colorCode')
+		});
+	chrome.extension.sendMessage({msg: "width"}, 
+		function(response) 
+		{
+			if(response)
+				myWidth = response.resp
+			else
+				console.log('error getting width')
+		});
+}
+
+document.addEventListener('DOMContentLoaded', loadOptions);
