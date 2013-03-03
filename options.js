@@ -43,7 +43,7 @@ function fillMenu()
     gests[key]=localStorage[key]
   }
   if(Object.keys(gests).length == 0)
-    gests = defaultGests
+    gests = invertHash(defaultGests)
   // availG = invertHash(gests)
   div = document.getElementById("optsTab");
   for(i=0;i<commandList.length;i++)
@@ -110,7 +110,7 @@ function restore_options()
   {
     var child = select.children[i];
     if (child.value == value) 
-	  {
+    {
       child.selected = "true";
       break;
     }
