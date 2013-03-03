@@ -44,7 +44,7 @@ function fillMenu()
   }
   if(Object.keys(gests).length == 0)
     gests = defaultGests
-  availG = invertHash(gests)
+  // availG = invertHash(gests)
   div = document.getElementById("optsTab");
   for(i=0;i<commandList.length;i++)
   {
@@ -55,8 +55,8 @@ function fillMenu()
     td=document.createElement('td')
     inp=document.createElement('input')
     inp.type='text'
-    if(availG[commandTrans[commandList[i]]])
-      inp.value=availG[commandTrans[commandList[i]]]
+    if(gests[commandTrans[commandList[i]]])
+      inp.value=gests[commandTrans[commandList[i]]]
     td.align='center'
     tr.appendChild(td)
     td.appendChild(inp)
