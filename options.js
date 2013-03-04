@@ -16,14 +16,21 @@
 */
 colorCodes={"red":"ff3300","green":"008000","blue":"00008B",
               "yellow":"FFFF00"}
+
 colorNames={"ff3300":"red","008000":"green","00008B":"blue",
               "FFFF00":"yellow"}
+
 defaultGests={"U":"newtab","R":"forward","L":"back","UD":"closetab"}
+
 commandTrans={"History Back":"back","History Forward":"forward",
               "Reload":"reload","Stop Loading":"stop",
-              "Open New Tab":"newtab","Close Current Tab":"closetab"}
-commandList=["History Back","History Forward","Reload","Stop Loading",
-              "Reload All Tabs","Open New Tab","Close Current Tab"]
+              "Open New Tab":"newtab","Close Current Tab":"closetab",
+              "Close Background Tabs":"closeback","Close Window":"closeall",
+              "Reload All Tabs":"reloadall",
+              "Next Tab":"nexttab","Previous Tab":"prevtab",
+              "Scroll to Top":"scrolltop", "Scroll to Bottom":"scrollbottom",
+              }
+
 
 function invertHash(hash)
 {
@@ -46,17 +53,17 @@ function fillMenu()
     gests = invertHash(defaultGests)
   // availG = invertHash(gests)
   div = document.getElementById("optsTab");
-  for(i=0;i<commandList.length;i++)
+  for(key in commandTrans)
   {
     tr=div.insertRow(div.rows.length)
     td=document.createElement('td')
-    td.appendChild(document.createTextNode(commandList[i]))
+    td.appendChild(document.createTextNode(key))
     tr.appendChild(td)
     td=document.createElement('td')
     inp=document.createElement('input')
     inp.type='text'
-    if(gests[commandTrans[commandList[i]]])
-      inp.value=gests[commandTrans[commandList[i]]]
+    if(gests[commandTrans[key]])
+      inp.value=gests[commandTrans[key]]
     td.align='center'
     tr.appendChild(td)
     td.appendChild(inp)
@@ -90,9 +97,7 @@ function save_options()
   {
     s = inputs[i].parentElement.parentElement.children[0].textContent
     if(inputs[i].value.length > 0)
-    {
       localStorage.setItem(commandTrans[s],inputs[i].value)
-    }
     else
       localStorage.removeItem(commandTrans[s])
   }

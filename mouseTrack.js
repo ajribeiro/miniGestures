@@ -20,9 +20,17 @@ var mx,my,nx,ny,lx,ly,phi
 var move="", omove=""
 var pi =3.14159
 var suppress=1
-var canvas
+var canvas, myGests, ginv
 var link, ls, myColor="red", myWidth=3
 var loaded=false
+
+function invertHash(hash)
+{
+  inv = {}
+  for(key in hash)
+    inv[hash[key]] = key
+  return inv
+}
 
 function createCanvas()
 {
@@ -43,7 +51,6 @@ function draw(x,y)
 	var ctx = document.getElementById('gestCanvas').getContext('2d');
 	ctx.beginPath();
 	ctx.strokeStyle = myColor
-	console.log('from func'+myColor)
 	ctx.lineWidth = myWidth
 	ctx.moveTo(lx,ly);
 	ctx.lineTo(x,y);
@@ -96,18 +103,19 @@ document.onmousemove = function(event)
 			if(tmove != omove)
 			{
 				move += tmove
-				if(moved)
-					link.href='Gesture: '+move
+				// if(moved)
+				// 	link.href='Gesture: '+move
 				omove = tmove
 			}
 			if(moved == false)
 			{
 				
 				createCanvas()
-				link = document.createElement('a');
-				link.href='Gesture: '+move
-				link.appendChild(canvas)
-				document.body.appendChild(link);
+				// link = document.createElement('a');
+				// link.href='Gesture: '+move
+				// link.appendChild(canvas)
+				// document.body.appendChild(link);
+				document.body.appendChild(canvas);
 			}
 			moved=true
 			draw(ny,nx)
@@ -131,7 +139,8 @@ document.onmouseup = function(event)
 			cvs = document.getElementById('gestCanvas')
 			if(cvs)
 			{
-				document.body.removeChild(link)
+				// document.body.removeChild(link)
+				document.body.removeChild(canvas)
 				cvs.width = cvs.width;
 			}
 			exeFunc()
@@ -149,40 +158,100 @@ document.onmouseup = function(event)
 function exeFunc()
 {
 	console.log('exeFunc '+move)
-	if(move == "L")
+	if(ginv[move])
 	{
-		window.history.back()
-	}
-	else if(move == "R")
-	{
-		window.history.forward()
-	}
-	else if(move == "U")
-	{
-		chrome.extension.sendMessage({msg: "newtab"}, 
-			function(response)
-			{
-				if(response != null)
-					console.log(response.resp);
-				else
+		action = ginv[move]
+		if(action == "back")
+		{
+			window.history.back()
+		}
+		else if(action == "forward")
+		{
+			window.history.forward()
+		}
+		else if(action == "newtab")
+		{
+			chrome.extension.sendMessage({msg: "newtab"}, 
+				function(response)
 				{
-					console.log('problem executing open tab')
-					if(chrome.extension.lastError)
-						console.log(chrome.extension.lastError.message)
-				}
-			});
-	}
- 	else if(move == "UD") 
-	{
-		chrome.extension.sendMessage({msg: "closetab"}, 
-			function(response)
-			{
-				console.log(response.resp);
-			});
-	}
-	else if(move == "RDL")
-	{
-		window.location.reload()
+					if(response != null)
+						console.log(response.resp);
+					else
+					{
+						console.log('problem executing open tab')
+						if(chrome.extension.lastError)
+							console.log(chrome.extension.lastError.message)
+					}
+				});
+		}
+	 	else if(action == "closetab") 
+		{
+			chrome.extension.sendMessage({msg: "closetab"}, 
+				function(response)
+				{
+					console.log(response.resp);
+				});
+		}
+
+	 	else if(action == "reloadall") 
+		{
+			chrome.extension.sendMessage({msg: "reloadall"}, 
+				function(response)
+				{
+					console.log(response.resp);
+				});
+		}
+
+	 	else if(action == "closeall") 
+		{
+			chrome.extension.sendMessage({msg: "closeall"}, 
+				function(response)
+				{
+					console.log(response.resp);
+				});
+		}
+
+	 	else if(action == "nexttab") 
+		{
+			chrome.extension.sendMessage({msg: "nexttab"}, 
+				function(response)
+				{
+					console.log(response.resp);
+				});
+		}
+
+	 	else if(action == "prevtab") 
+		{
+			chrome.extension.sendMessage({msg: "prevtab"}, 
+				function(response)
+				{
+					console.log(response.resp);
+				});
+		}
+
+	 	else if(action == "closeback") 
+		{
+			console.log('closeback')
+			chrome.extension.sendMessage({msg: "closeback"}, 
+				function(response)
+				{
+					console.log(response.resp);
+				});
+		}
+
+
+	 	else if(action == "scrolltop") 
+			window.scrollTo(0,0)
+
+		else if(action == "scrollbottom") 
+			window.scrollTo(0,document.body.scrollHeight)
+
+		else if(action == "reload")
+			window.location.reload()
+
+		else if(action == "stop")
+			window.stop()
+
 	}
 }
 
@@ -219,6 +288,16 @@ function loadOptions(name)
 				myWidth = response.resp
 			else
 				console.log('error getting width')
+		});
+	chrome.extension.sendMessage({msg: "gests"}, 
+		function(response) 
+		{
+			console.log('getting gests '+response.resp)
+			if(response)
+				myGests = response.resp
+			else
+				console.log('error getting gestures')
+			ginv = invertHash(myGests)
 		});
 }
 
