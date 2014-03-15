@@ -15,17 +15,43 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.   
 */
 
-chrome.extension.onMessage.addListener
-(
+
+chrome.tabs.onRemoved.addListener(
+    function(tabId, removeInfo){
+        chrome.tabs.get(tabId, function(tab){
+            x = tabId.toString()
+            chrome.storage.local.get(x,function(items){
+                chrome.storage.local.set({"lasturl":items[x].slice(9,items[x].length)},function (){});
+                chrome.storage.local.remove(x, function(Items){});
+            });
+        });
+    });
+
+
+chrome.tabs.onUpdated.addListener(
+    function(tabId,changeInfo,tab){
+        chrome.tabs.get(tabId, function(tab){
+            var kk = tabId.toString()
+            var x = {}
+            x[kk] += tab.url
+            chrome.storage.local.set(x,function(){});
+        });
+
+    });
+
+
+
+chrome.extension.onMessage.addListener(
     function(request, sender, sendResponse) {
         if(request.msg == "newtab"){
             chrome.tabs.create({})
             sendResponse({resp: "tab open"});
         }
+
         if(request.msg == "closetab"){
             chrome.tabs.getSelected(null, 
             function(tab){
-                    chrome.tabs.remove(tab.id);
+                chrome.tabs.remove(tab.id);
             });
             sendResponse({resp: "tab closed"});
         }
@@ -33,7 +59,7 @@ chrome.extension.onMessage.addListener
         if(request.msg == "colorCode")
             sendResponse({resp: localStorage["colorCode"]});
         
-      if(request.msg == "width")
+        if(request.msg == "width")
             sendResponse({resp: localStorage["width"]});
 
         if(request.msg == "gests")
@@ -48,6 +74,15 @@ chrome.extension.onMessage.addListener
           sendResponse({resp: gests});
         }
 
+        if(request.msg == "lasttab")
+        {
+            chrome.storage.local.get('lasturl', function(result){
+                chrome.tabs.create({'url':result.lasturl}, function(tab){})
+            });
+            sendResponse({resp:"tab opened"})
+        }
+
+
         if(request.msg == "reloadall")
         {
             chrome.tabs.getAllInWindow(null, 
@@ -56,7 +91,7 @@ chrome.extension.onMessage.addListener
                         chrome.tabs.update(tabs[i].id, {url: tabs[i].url});
                 });
             sendResponse({resp:"tabs reloaded"})
-    }
+        }
 
     if(request.msg == "nexttab")
         {

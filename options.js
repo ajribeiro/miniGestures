@@ -29,6 +29,7 @@ commandTrans={"History Back":"back","History Forward":"forward",
               "Reload All Tabs":"reloadall",
               "Next Tab":"nexttab","Previous Tab":"prevtab",
               "Scroll to Top":"scrolltop", "Scroll to Bottom":"scrollbottom",
+              "Re-open Last Closed Tab":"lasttab",
               }
 
 
@@ -87,7 +88,7 @@ function save_options()
   var status = document.getElementById("status");
   status.innerHTML = "Configuration Saved";
   setTimeout(
-    function() 
+    function()
     {
       status.innerHTML = "";
     }, 750);
@@ -114,7 +115,7 @@ function restore_options()
   for (var i = 0; i < select.children.length; i++) 
   {
     var child = select.children[i];
-    if (child.value == value) 
+    if (child.value == value)
     {
       child.selected = "true";
       break;

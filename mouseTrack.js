@@ -36,15 +36,15 @@ function createCanvas()
 {
     canvas = document.createElement('canvas');
     canvas.id = "gestCanvas"
-    canvas.style.width=document.body.clientWidth
-    canvas.style.height=document.body.clientHeight
-    canvas.width=window.document.body.clientWidth
-    canvas.height=window.document.body.clientHeight     
+    canvas.style.width=document.body.scrollWidth
+    canvas.style.height=document.body.scrollHeight
+    canvas.width=window.document.body.scrollWidth
+    canvas.height=window.document.body.scrollHeight     
     canvas.style.left="0px";
     canvas.style.top="0px";
     canvas.style.overflow = 'visible';
     canvas.style.position = 'absolute';
-    canvas.style.zIndex="1000"
+    canvas.style.zIndex="10000"
 }
 function draw(x,y)
 {
@@ -181,7 +181,9 @@ function exeFunc()
         else if(action == "closetab"){
             chrome.extension.sendMessage({msg: "closetab"});
         }
-
+        else if(action == "lasttab"){
+            chrome.extension.sendMessage({msg: "lasttab"});
+        }
         else if(action == "reloadall"){
             chrome.extension.sendMessage({msg: "reloadall"});
         }
@@ -221,11 +223,11 @@ function exeFunc()
 
 document.oncontextmenu = function()
 {
-    console.log('ctx menu suppress is '+suppress)
+    // console.log('ctx menu suppress is '+suppress)
     if(suppress)
         return false
     else{
-        console.log("open it");
+        // console.log("open it");
         suppress++
         return true
     }
@@ -236,29 +238,29 @@ function loadOptions(name)
     chrome.extension.sendMessage({msg: "colorCode"}, 
         function(response) {
             if(response){
-                console.log('color'+response.resp)
+                // console.log('color'+response.resp)
                 myColor = response.resp
             }
-            else
-                console.log('error getting colorCode')
+            // else
+            //     console.log('error getting colorCode')
         });
     chrome.extension.sendMessage({msg: "width"}, 
         function(response) {
             if(response){
                 myWidth = response.resp
-                console.log('width '+myWidth)
+                // console.log('width '+myWidth)
             }
-            else
-                console.log('error getting width')
+            // else
+            //     console.log('error getting width')
         });
     chrome.extension.sendMessage({msg: "gests"}, 
         function(response) 
         {
-            console.log('getting gests '+response.resp)
+            // console.log('getting gests '+response.resp)
             if(response)
                 myGests = response.resp
-            else
-                console.log('error getting gestures')
+            // else
+            //     console.log('error getting gestures')
             ginv = invertHash(myGests)
         });
 }
