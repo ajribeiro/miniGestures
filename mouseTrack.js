@@ -15,7 +15,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.   
 */
 
-var mousedown=false, moved=false
+var rmousedown=false, moved=false, lmousedown=false
+var rocker=false, trail=false
 var mx,my,nx,ny,lx,ly,phi
 var move="", omove=""
 var pi =3.14159
@@ -23,6 +24,7 @@ var suppress=1
 var canvas, myGests, ginv
 var link, ls, myColor="red", myWidth=3
 var loaded=false
+var rocked=false
 
 function invertHash(hash)
 {
@@ -58,32 +60,67 @@ function draw(x,y)
     lx=x
     ly=y
 }
+
 document.onmousedown = function(event)
 {
-    // console.log('mousedown '+suppress)
-    //right mouse click
-    if(event.which == 3 && suppress)
+    if(event.which == 1){
+        lmousedown = true
+    }
+    else if(event.which == 3){
+        rmousedown = true
+    }
+
+    //leftrock
+    if(event.which == 1 && rmousedown && suppress && rocker)
     {
         if(! loaded)
         {
             loadOptions()
             loaded=true
         }
-        my = event.pageX;
-        mx = event.pageY;
-        lx = my
-        ly = mx
-        move = ""
-        omove=""
-        mousedown=true
-        moved=false
+        move = 'back'
+        rocked = true
+        // console.log(rocked)
+        exeRock()
     }
+
+    // console.log('rmousedown '+suppress)
+    //right mouse click
+    else if(event.which == 3 && suppress)
+    {
+        if(! loaded)
+        {
+            loadOptions()
+            loaded=true
+        }
+        if(lmousedown && rocker){
+            if(! loaded)
+            {
+                loadOptions()
+                loaded=true
+            }
+            move = 'forward'
+            rocked = true
+            // console.log(rocked)
+            exeRock()
+        }
+        else{
+            my = event.pageX;
+            mx = event.pageY;
+            lx = my
+            ly = mx
+            move = ""
+            omove=""
+            moved=false
+        }
+    }
+
 };
 
 document.onmousemove = function(event)
 {
     //track the mouse if we are holding the right button
-    if(mousedown)
+    if(rmousedown)
     {
         ny = event.pageX;
         nx = event.pageY;
@@ -112,7 +149,13 @@ document.onmousemove = function(event)
                 document.body.appendChild(canvas);
             }
             moved=true
-            draw(ny,nx)
+            console.log('indraw'+trail)
+
+            if(trail){
+                console.log('draw')
+                draw(ny,nx)
+            }
+
             mx = nx
             my = ny
         }
@@ -123,13 +166,14 @@ document.onmousemove = function(event)
 document.onmouseup = function(event)
 {
     // console.log('mouse is up '+suppress)
-    //right mouse click
-    if(event.which == 3)
-    {
+    if(event.which == 1)
+        lmousedown = false
+
+    //right mouse release
+    if(event.which == 3){
         // console.log('suppress is '+suppress)
-        mousedown=false
-        if(moved)
-        {
+        rmousedown=false
+        if(moved){
             cvs = document.getElementById('gestCanvas')
             if(cvs)
             {
@@ -139,15 +183,28 @@ document.onmouseup = function(event)
             }
             exeFunc()
         }
-        else
-        {
+        else if(rocked){
+            rocked = false
+        }
+        else{
             --suppress
             // console.log('no move '+suppress)
-            $('#target').mousedown(which=3);
+            $('#target').rmousedown(which=3);
         }
     }
 };
-
+function exeRock()
+{
+    action = move
+    if(action == "back")
+    {
+        window.history.back()
+    }
+    else if(action == "forward")
+    {
+        window.history.forward()
+    }
+}
 
 function exeFunc()
 {
@@ -256,12 +313,27 @@ function loadOptions(name)
     chrome.extension.sendMessage({msg: "gests"}, 
         function(response) 
         {
-            // console.log('getting gests '+response.resp)
             if(response)
                 myGests = response.resp
-            // else
-            //     console.log('error getting gestures')
             ginv = invertHash(myGests)
+        });
+
+    chrome.extension.sendMessage({msg: "rocker"}, 
+        function(response) 
+        {
+            if(response)
+                rocker = response.resp
+            if(rocker == 'true') rocker = true
+            else rocker = false
+        });
+
+    chrome.extension.sendMessage({msg: "trail"}, 
+        function(response) 
+        {
+            if(response)
+                trail = response.resp
+            if(trail == 'true') trail = true
+            else trail = false
         });
 }
 

@@ -1,6 +1,6 @@
 <!-- 
 /*   
- * 	Copyright (C) 2013  AJ Ribeiro
+ *  Copyright (C) 2013  AJ Ribeiro
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,43 +19,58 @@
 
 <html>
 <head>
-	<title>miniGestures Options</title>
-	<script src="coin.js"></script>
+    <title>miniGestures Options</title>
+    <script src="coin.js"></script>
 </head>
 
 <h1>Configuration page for miniGestures</h1>
 <h2>Note: valid gestures are U (up), D (down), L (left), R (right)</h2>
 
+
 <body>
 <table id="optsTab" border="3">
-	<tr>
-		<th colspan=1>Gesture Color:</th>
-		<td>
-			<select id="color">
-				<option value="red" selected>red</option>
-				<option value="green">green</option>
-				<option value="blue">blue</option>
-				<option value="yellow">yellow</option>
-			</select>
-		</td>
-	</tr>
-	<tr>
-		<th colspan=1>Gesture Width:</th>
-		<td>
-			<select id="width">
-				<option value="1">1</option>
-				<option value="2">2</option>
-				<option value="3" selected>3</option>
-				<option value="4">4</option>
-				<option value="5">5</option>
-			</select>
-		</td>
-	</tr>
-	<tr><th colspan=2 align='center'>Gestures</th></tr>
-	<tr>
-		<th>Action</th>
-		<th>Gesture</th>
-	</tr>
+    <tr>
+        <th colspan=1>Rocker Gestures On:</th>
+        <td>
+            <input type='checkbox' id='rocker' checked='true'></input>
+        </td>
+    </tr>
+
+    <tr>
+        <th colspan=1>Show Gesture Trails:</th>
+        <td>
+            <input type='checkbox' id='trail' checked='true'></input>
+        </td>
+    </tr>
+
+    <tr>
+        <th colspan=1>Gesture Color:</th>
+        <td>
+            <select id="color">
+                <option value="red" selected>red</option>
+                <option value="green">green</option>
+                <option value="blue">blue</option>
+                <option value="yellow">yellow</option>
+            </select>
+        </td>
+    </tr>
+    <tr>
+        <th colspan=1>Gesture Width:</th>
+        <td>
+            <select id="width">
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3" selected>3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+            </select>
+        </td>
+    </tr>
+    <tr><th colspan=2 align='center'>Gestures</th></tr>
+    <tr>
+        <th>Action</th>
+        <th>Gesture</th>
+    </tr>
 </table>
 
 
@@ -69,7 +84,7 @@
 <script src="options.js"></script>
 
 <table>
-	<tr>
+    <tr>
 <h2>If you like this, feel free to donate!</h2>
 <tr>
 <button class="bitcoinate" data-size="30" data-address="1a3thW7tw9wnnNYd5u7iQT25PBuvvVonD">bitcoinate</button>

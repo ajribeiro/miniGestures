@@ -40,6 +40,7 @@ function invertHash(hash)
     inv[hash[key]] = key
   return inv
 }
+
 function fillMenu()
 {
   var key,div,tr,td,select,inp,img,a
@@ -83,6 +84,22 @@ function save_options()
 
   select = document.getElementById("width");
   localStorage["width"]=select.children[select.selectedIndex].value;
+
+  var rocker = document.getElementById('rocker')
+  if(rocker.checked){
+    localStorage['rocker'] = true
+  }
+  else{
+    localStorage['rocker'] = false
+  }
+
+  var trail = document.getElementById('trail')
+  if(trail.checked){
+    localStorage['trail'] = true
+  }
+  else{
+    localStorage['trail'] = false
+  }
 
   // Update status to let user know options were saved.
   var status = document.getElementById("status");

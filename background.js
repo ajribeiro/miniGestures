@@ -74,6 +74,16 @@ chrome.extension.onMessage.addListener(
           sendResponse({resp: gests});
         }
 
+        if(request.msg == "rocker")
+        {
+          sendResponse({resp: localStorage["rocker"]});
+        }
+
+        if(request.msg == "trail")
+        {
+          sendResponse({resp: localStorage["trail"]});
+        }
+
         if(request.msg == "lasttab")
         {
             chrome.storage.local.get('lasturl', function(result){
