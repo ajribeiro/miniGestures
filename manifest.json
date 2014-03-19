@@ -13,7 +13,7 @@
 			"run_at": "document_start"
     }
   ],
-"version": "1.2",
+"version": "1.4",
 "options_page": "options.html",
 "description": "a very simple mouse gestures program"
 }

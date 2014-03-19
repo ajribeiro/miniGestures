@@ -25,13 +25,14 @@ var canvas, myGests, ginv
 var link, ls, myColor="red", myWidth=3
 var loaded=false
 var rocked=false
+var link=null
 
 function invertHash(hash)
 {
-  inv = {}
-  for(key in hash)
-    inv[hash[key]] = key
-  return inv
+    inv = {}
+    for(key in hash)
+        inv[hash[key]] = key
+    return inv
 }
 
 function createCanvas()
@@ -48,8 +49,7 @@ function createCanvas()
     canvas.style.position = 'absolute';
     canvas.style.zIndex="10000"
 }
-function draw(x,y)
-{
+function draw(x,y){
     var ctx = document.getElementById('gestCanvas').getContext('2d');
     ctx.beginPath();
     ctx.strokeStyle = myColor
@@ -61,8 +61,7 @@ function draw(x,y)
     ly=y
 }
 
-document.onmousedown = function(event)
-{
+document.onmousedown = function(event){
     if(event.which == 1){
         lmousedown = true
     }
@@ -71,10 +70,8 @@ document.onmousedown = function(event)
     }
 
     //leftrock
-    if(event.which == 1 && rmousedown && suppress && rocker)
-    {
-        if(! loaded)
-        {
+    if(event.which == 1 && rmousedown && suppress && rocker){
+        if(! loaded){
             loadOptions()
             loaded=true
         }
@@ -86,16 +83,13 @@ document.onmousedown = function(event)
 
     // console.log('rmousedown '+suppress)
     //right mouse click
-    else if(event.which == 3 && suppress)
-    {
-        if(! loaded)
-        {
+    else if(event.which == 3 && suppress){
+        if(! loaded){
             loadOptions()
             loaded=true
         }
         if(lmousedown && rocker){
-            if(! loaded)
-            {
+            if(! loaded){
                 loadOptions()
                 loaded=true
             }
@@ -112,6 +106,15 @@ document.onmousedown = function(event)
             move = ""
             omove=""
             moved=false
+            if(event.target.href){
+                link = event.target.href
+            }
+            else if(event.target.parentElement.href){
+                link = event.target.parentElement.href
+            }
+            else{
+                link = null
+            }
         }
     }
 
@@ -222,18 +225,23 @@ function exeFunc()
         }
         else if(action == "newtab")
         {
-            chrome.extension.sendMessage({msg: "newtab"}, 
-                function(response)
-                {
-                    if(response != null)
-                        console.log(response.resp);
-                    else
+            if(link == null){
+                chrome.extension.sendMessage({msg: "newtab"}, 
+                    function(response)
                     {
-                        console.log('problem executing open tab')
-                        if(chrome.extension.lastError)
-                            console.log(chrome.extension.lastError.message)
-                    }
-                });
+                        if(response != null)
+                            console.log(response.resp);
+                        else
+                        {
+                            console.log('problem executing open tab')
+                            if(chrome.extension.lastError)
+                                console.log(chrome.extension.lastError.message)
+                        }
+                    });
+            }
+            else{
+                window.open(link)
+            }
         }
         else if(action == "closetab"){
             chrome.extension.sendMessage({msg: "closetab"});

@@ -25,7 +25,7 @@
 
 <h1>Configuration page for miniGestures</h1>
 <h2>Note: valid gestures are U (up), D (down), L (left), R (right)</h2>
-
+<h2>Note: miniGestures is free and ad-free, the Paypal button at the bottom is for optional donations</h2>
 
 <body>
 <table id="optsTab" border="3">
@@ -84,10 +84,26 @@
 <script src="options.js"></script>
 
 <table>
-    <tr>
+<tr>
 <h2>If you like this, feel free to donate!</h2>
 <tr>
-<button class="bitcoinate" data-size="30" data-address="1a3thW7tw9wnnNYd5u7iQT25PBuvvVonD">bitcoinate</button>
+<form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
+<input type="hidden" name="cmd" value="_s-xclick">
+<table>
+<tr><td><input type="hidden" name="on0" value="Donation Levels">Donation Levels</td></tr><tr><td><select name="os0">
+    <option value="Small Donation">Small Donation $1.00 USD</option>
+    <option value="Medium Donation">Medium Donation $5.00 USD</option>
+    <option value="Large Donation">Large Donation $10.00 USD</option>
+</select> </td></tr>
+</table>
+
+<table>
+<input type="hidden" name="currency_code" value="USD">
+<input type="hidden" name="encrypted" value="-----BEGIN PKCS7-----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-----END PKCS7-----
+">
+<input type="image" src="donate-button.jpg" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!" width='160px'>
+<img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1">
+</form>
 </tr>
 </table>
 
