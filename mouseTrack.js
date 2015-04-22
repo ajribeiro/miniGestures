@@ -21,7 +21,7 @@ var mx,my,nx,ny,lx,ly,phi
 var move="", omove=""
 var pi =3.14159
 var suppress=1
-var canvas, myGests, ginv
+var canvas, txtCanvas, myGests, ginv
 var link, ls, myColor="ff3300", myWidth=3
 var loaded=false
 var rocked=false
@@ -49,6 +49,26 @@ function createCanvas()
     canvas.style.position = 'absolute';
     canvas.style.zIndex="10000"
 }
+function createTextCanvas()
+{
+	if(!txtCanvas){
+	    txtCanvas = document.createElement('canvas');
+	    txtCanvas.id = "gestCanvasText";
+	    txtCanvas.style.width=300;
+	    txtCanvas.style.height=100;
+	    txtCanvas.width=300;
+	    txtCanvas.height=100;
+	    txtCanvas.style.left="50%";
+	    txtCanvas.style.top="50%";
+	    txtCanvas.style.overflow = 'visible';
+	    txtCanvas.style.position = 'absolute';
+	    txtCanvas.style.zIndex="10001";
+	    var ctx = txtCanvas.getContext('2d');
+	    ctx.font = "bold 30px 'Arial'";
+		ctx.textBaseline = 'top';
+	    ctx.fillStyle = "#" + myColor;
+	}
+}
 function draw(x,y){
     var ctx = document.getElementById('gestCanvas').getContext('2d');
     ctx.beginPath();
@@ -59,6 +79,22 @@ function draw(x,y){
     ctx.stroke()
     lx=x
     ly=y
+
+    drawText();
+}
+function drawText(){
+	if( txtCanvas ){
+	    var ctx = txtCanvas.getContext('2d');
+		//console.log("action:" + ginv[move]);
+		ctx.clearRect(0, 0, 300, 100);
+
+	    if(ginv[move]){
+	        action = ginv[move];
+		    ctx.beginPath();
+	        ctx.fillText(action, 0, 0);
+		    ctx.stroke();
+	    }
+	}
 }
 
 document.onmousedown = function(event){
@@ -149,13 +185,15 @@ document.onmousemove = function(event)
             {
                 // console.log('making canvas')
                 createCanvas()
+                createTextCanvas();
                 document.body.appendChild(canvas);
+                document.body.appendChild(txtCanvas);
             }
             moved=true
-            console.log('indraw'+trail)
+            //console.log('indraw:'+trail)
 
             if(trail){
-                console.log('draw')
+                //console.log('draw')
                 draw(ny,nx)
             }
 
@@ -182,6 +220,7 @@ document.onmouseup = function(event)
             {
                 // document.body.removeChild(link)
                 document.body.removeChild(canvas)
+                document.body.removeChild(txtCanvas);
                 cvs.width = cvs.width;
             }
             exeFunc()
