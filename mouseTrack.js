@@ -22,7 +22,7 @@ var move="", omove=""
 var pi =3.14159
 var suppress=1
 var canvas, myGests, ginv
-var link, ls, myColor="red", myWidth=3
+var link, ls, myColor="ff3300", myWidth=3
 var loaded=false
 var rocked=false
 var link=null
@@ -52,7 +52,7 @@ function createCanvas()
 function draw(x,y){
     var ctx = document.getElementById('gestCanvas').getContext('2d');
     ctx.beginPath();
-    ctx.strokeStyle = myColor
+    ctx.strokeStyle = "#" + myColor;
     ctx.lineWidth = myWidth
     ctx.moveTo(lx,ly);
     ctx.lineTo(x,y);
