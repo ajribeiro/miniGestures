@@ -58,8 +58,6 @@ function createTextCanvas()
 	    txtCanvas.style.height=100;
 	    txtCanvas.width=300;
 	    txtCanvas.height=100;
-	    txtCanvas.style.left="50%";
-	    txtCanvas.style.top="50%";
 	    txtCanvas.style.overflow = 'visible';
 	    txtCanvas.style.position = 'absolute';
 	    txtCanvas.style.zIndex="10001";
@@ -94,6 +92,12 @@ function drawText(){
 	        ctx.fillText(action, 0, 0);
 		    ctx.stroke();
 	    }
+
+		// display x,y position 
+		var top  = ( $(window).height() - txtCanvas.height ) / 2 + $(window).scrollTop();
+		var left = ( $(window).width()  - txtCanvas.width )  / 2 + $(window).scrollLeft();
+	    txtCanvas.style.top  = top  + "px";
+	    txtCanvas.style.left = left + "px";
 	}
 }
 
