@@ -328,7 +328,10 @@ function exeFunc()
 document.oncontextmenu = function()
 {
     // console.log('ctx menu suppress is '+suppress)
-    if(suppress)
+    if(rocked){
+		return false;
+	}
+    else if(suppress)
         return false
     else{
         // console.log("open it");
