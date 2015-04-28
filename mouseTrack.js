@@ -68,10 +68,7 @@ function createTextCanvas()
 	}
 }
 function draw(x,y){
-
-	// display x,y position 
-    canvas.style.top  = $(window).scrollTop()  + "px";
-    canvas.style.left = $(window).scrollLeft() + "px";
+	adjustCanvasPosition();
 
     var ctx = document.getElementById('gestCanvas').getContext('2d');
     ctx.beginPath();
@@ -119,12 +116,6 @@ function drawText(){
 
 		// save draw "gesture action".
 	    prev_action = action;
-
-		// display x,y position 
-		var top  = ( $(window).height() - txtCanvas.height ) / 2 + $(window).scrollTop();
-		var left = ( $(window).width()  - txtCanvas.width )  / 2 + $(window).scrollLeft();
-	    txtCanvas.style.top  = top  + "px";
-	    txtCanvas.style.left = left + "px";
 	}
 }
 
@@ -234,8 +225,6 @@ document.onmousemove = function(event)
         }
     }
 };
-
-
 document.onmouseup = function(event)
 {
     // console.log('mouse is up '+suppress)
@@ -267,6 +256,23 @@ document.onmouseup = function(event)
         }
     }
 };
+document.onmousewheel = function onmousewheel_handler(event)
+{
+	adjustCanvasPosition();
+}
+function adjustCanvasPosition()
+{
+	// display x,y position 
+    canvas.style.top  = $(window).scrollTop()  + "px";
+    canvas.style.left = $(window).scrollLeft() + "px";
+
+	// display x,y position 
+	var top  = ( $(window).height() - txtCanvas.height ) / 2 + $(window).scrollTop();
+	var left = ( $(window).width()  - txtCanvas.width )  / 2 + $(window).scrollLeft();
+    txtCanvas.style.top  = top  + "px";
+    txtCanvas.style.left = left + "px";
+}
+
 function exeRock()
 {
     action = move
