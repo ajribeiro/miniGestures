@@ -39,10 +39,10 @@ function createCanvas()
 {
     canvas = document.createElement('canvas');
     canvas.id = "gestCanvas"
-    canvas.style.width=document.body.scrollWidth
-    canvas.style.height=document.body.scrollHeight
-    canvas.width=window.document.body.scrollWidth
-    canvas.height=window.document.body.scrollHeight     
+    canvas.style.width=$(window).width()
+    canvas.style.height=$(window).height()
+    canvas.width=$(window).width()
+    canvas.height=$(window).height()
     canvas.style.left="0px";
     canvas.style.top="0px";
     canvas.style.overflow = 'visible';
@@ -68,6 +68,11 @@ function createTextCanvas()
 	}
 }
 function draw(x,y){
+
+	// display x,y position 
+    canvas.style.top  = $(window).scrollTop()  + "px";
+    canvas.style.left = $(window).scrollLeft() + "px";
+
     var ctx = document.getElementById('gestCanvas').getContext('2d');
     ctx.beginPath();
     ctx.strokeStyle = "#" + myColor;
@@ -161,8 +166,8 @@ document.onmousedown = function(event){
             exeRock()
         }
         else{
-            my = event.pageX;
-            mx = event.pageY;
+            my = event.pageX - $(window).scrollLeft();
+            mx = event.pageY - $(window).scrollTop();
             lx = my
             ly = mx
             move = ""
@@ -187,8 +192,9 @@ document.onmousemove = function(event)
     //track the mouse if we are holding the right button
     if(rmousedown)
     {
-        ny = event.pageX;
-        nx = event.pageY;
+        ny = event.pageX - $(window).scrollLeft();
+        nx = event.pageY - $(window).scrollTop();
+
         var r = Math.sqrt(Math.pow(nx-mx,2)+Math.pow(ny-my,2))
         if(r > 16)
         {
