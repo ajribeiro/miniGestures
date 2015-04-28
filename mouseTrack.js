@@ -81,17 +81,39 @@ function draw(x,y){
     drawText();
 }
 function drawText(){
-	if( txtCanvas ){
-	    var ctx = txtCanvas.getContext('2d');
-		//console.log("action:" + ginv[move]);
-		ctx.clearRect(0, 0, 300, 100);
 
+	if( txtCanvas ){
+	    // copy now "gesture action"
 	    if(ginv[move]){
 	        action = ginv[move];
+	    }
+	    else{
+			action = null;
+		}
+
+		// If there is no change, Skip processing
+		if( typeof prev_action !== "undefined" ){
+			if( action == prev_action ){
+				return;
+			}
+		}
+
+		//console.log("action:" + ginv[move])
+
+		// clear canvas
+    	var ctx = txtCanvas.getContext('2d');;
+		ctx.clearRect(0, 0, 300, 100);
+
+		// draw text
+		if( action != null )
+		{
 		    ctx.beginPath();
 	        ctx.fillText(action, 0, 0);
 		    ctx.stroke();
-	    }
+		}
+
+		// save draw "gesture action".
+	    prev_action = action;
 
 		// display x,y position 
 		var top  = ( $(window).height() - txtCanvas.height ) / 2 + $(window).scrollTop();
