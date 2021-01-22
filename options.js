@@ -24,7 +24,7 @@ defaultGests={"U":"newtab","R":"forward","L":"back","UD":"closetab"}
 
 commandTrans={"History Back":"back","History Forward":"forward",
                             "Reload":"reload","Stop Loading":"stop",
-                            "Open New Tab":"newtab","Close Current Tab":"closetab",
+                            "Open New Tab":"newtab","Open New Tab in Background":"bgnewtab","Close Current Tab":"closetab",
                             "Close Background Tabs":"closeback","Close Window":"closeall",
                             "Reload All Tabs":"reloadall",
                             "Next Tab":"nexttab","Previous Tab":"prevtab",
@@ -125,6 +125,9 @@ function save_options()
 // Restores select box state to saved value from localStorage.
 function restore_options() 
 {
+    document.getElementById("rocker").checked = localStorage.rocker === "true";
+    document.getElementById("trail" ).checked = localStorage.trail  === "true";
+
     var select, value
     select = document.getElementById("color");
     value = colorNames[localStorage["colorCode"]]

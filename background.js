@@ -48,6 +48,11 @@ chrome.extension.onMessage.addListener(
             sendResponse({resp: "tab open"});
         }
 
+        if(request.msg == "bgnewtab"){
+            if( request.url )
+                chrome.tabs.create({active: false, url: request.url});
+        }
+
         if(request.msg == "closetab"){
             chrome.tabs.getSelected(null, 
             function(tab){
@@ -58,7 +63,7 @@ chrome.extension.onMessage.addListener(
 
         if(request.msg == "colorCode")
             sendResponse({resp: localStorage["colorCode"]});
-        
+
         if(request.msg == "width")
             sendResponse({resp: localStorage["width"]});
 

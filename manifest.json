@@ -8,7 +8,7 @@
   "content_scripts": [
     {
 			"matches": ["<all_urls>"],
-      "js": ["jquery.js", "mouseTrack.js"],
+      "js": ["mouseTrack.js"],
 			"all_frames": true,
 			"run_at": "document_start"
     }

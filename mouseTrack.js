@@ -106,14 +106,12 @@ document.onmousedown = function(event){
             move = ""
             omove=""
             moved=false
-            if(event.target.href){
-                link = event.target.href
-            }
-            else if(event.target.parentElement.href){
-                link = event.target.parentElement.href
-            }
-            else{
-                link = null
+            p = event.target;
+            link = null;
+            while( p && !link )
+            {
+                link = p.href;
+                p = p.parentElement;
             }
         }
     }
@@ -192,7 +190,7 @@ document.onmouseup = function(event)
         else{
             --suppress
             // console.log('no move '+suppress)
-            $('#target').rmousedown(which=3);
+            //$('#target').rmousedown(which=3);
         }
     }
 };
@@ -242,6 +240,9 @@ function exeFunc()
             else{
                 window.open(link)
             }
+        }
+        else if(action == "bgnewtab") {
+            chrome.extension.sendMessage({msg: "bgnewtab", url: link});
         }
         else if(action == "closetab"){
             chrome.extension.sendMessage({msg: "closetab"});
@@ -294,6 +295,9 @@ document.oncontextmenu = function()
     else{
         // console.log("open it");
         suppress++
+        moved      = false;
+        lmousedown = false;
+        rmousedown = false;
         return true
     }
 };
