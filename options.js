@@ -32,15 +32,6 @@ commandTrans={"History Back":"back","History Forward":"forward",
                             "Re-open Last Closed Tab":"lasttab",
                             }
 
-
-function invertHash(hash)
-{
-    inv = {}
-    for(key in hash)
-        inv[hash[key]] = key
-    return inv
-}
-
 function fillMenu()
 {
     var key,div,tr,td,select,inp,img,a
@@ -53,7 +44,6 @@ function fillMenu()
     }
     if(Object.keys(gests).length == 0)
         gests = invertHash(defaultGests)
-    // availG = invertHash(gests)
     div = document.getElementById("optsTab");
     for(key in commandTrans)
     {

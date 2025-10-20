@@ -22,18 +22,9 @@ var move="", omove=""
 var pi =3.14159
 var suppress=1
 var canvas, myGests, ginv
-var link, ls, myColor="red", myWidth=3
+var link=null, ls, myColor="red", myWidth=3
 var loaded=false
 var rocked=false
-var link=null
-
-function invertHash(hash)
-{
-    inv = {}
-    for(key in hash)
-        inv[hash[key]] = key
-    return inv
-}
 
 function createCanvas()
 {
@@ -77,11 +68,8 @@ document.onmousedown = function(event){
         }
         move = 'back'
         rocked = true
-        // console.log(rocked)
         exeRock()
     }
-
-    // console.log('rmousedown '+suppress)
     //right mouse click
     else if(event.which == 3 && suppress){
         if(! loaded){
@@ -95,7 +83,6 @@ document.onmousedown = function(event){
             }
             move = 'forward'
             rocked = true
-            // console.log(rocked)
             exeRock()
         }
         else{
@@ -147,15 +134,12 @@ document.onmousemove = function(event)
             }
             if(moved == false)
             {
-                // console.log('making canvas')
                 createCanvas()
                 document.body.appendChild(canvas);
             }
             moved=true
-            console.log('indraw'+trail)
 
             if(trail){
-                console.log('draw')
                 draw(ny,nx)
             }
 
@@ -168,19 +152,16 @@ document.onmousemove = function(event)
 
 document.onmouseup = function(event)
 {
-    // console.log('mouse is up '+suppress)
     if(event.which == 1)
         lmousedown = false
 
     //right mouse release
     if(event.which == 3){
-        // console.log('suppress is '+suppress)
         rmousedown=false
         if(moved){
             cvs = document.getElementById('gestCanvas')
             if(cvs)
             {
-                // document.body.removeChild(link)
                 document.body.removeChild(canvas)
                 cvs.width = cvs.width;
             }
@@ -191,8 +172,6 @@ document.onmouseup = function(event)
         }
         else{
             --suppress
-            // console.log('no move '+suppress)
-            $('#target').rmousedown(which=3);
         }
     }
 };
@@ -211,7 +190,6 @@ function exeRock()
 
 function exeFunc()
 {
-    // console.log('exeFunc '+move)
     if(ginv[move])
     {
         action = ginv[move]
@@ -226,47 +204,36 @@ function exeFunc()
         else if(action == "newtab")
         {
             if(link == null){
-                chrome.extension.sendMessage({msg: "newtab"}, 
-                    function(response)
-                    {
-                        if(response != null)
-                            console.log(response.resp);
-                        else
-                        {
-                            console.log('problem executing open tab')
-                            if(chrome.extension.lastError)
-                                console.log(chrome.extension.lastError.message)
-                        }
-                    });
+                chrome.runtime.sendMessage({msg: "newtab"});
             }
             else{
                 window.open(link)
             }
         }
         else if(action == "closetab"){
-            chrome.extension.sendMessage({msg: "closetab"});
+            chrome.runtime.sendMessage({msg: "closetab"});
         }
         else if(action == "lasttab"){
-            chrome.extension.sendMessage({msg: "lasttab"});
+            chrome.runtime.sendMessage({msg: "lasttab"});
         }
         else if(action == "reloadall"){
-            chrome.extension.sendMessage({msg: "reloadall"});
+            chrome.runtime.sendMessage({msg: "reloadall"});
         }
 
         else if(action == "closeall"){
-            chrome.extension.sendMessage({msg: "closeall"});
+            chrome.runtime.sendMessage({msg: "closeall"});
         }
 
         else if(action == "nexttab") {
-            chrome.extension.sendMessage({msg: "nexttab"});
+            chrome.runtime.sendMessage({msg: "nexttab"});
         }
 
         else if(action == "prevtab"){
-            chrome.extension.sendMessage({msg: "prevtab"});
+            chrome.runtime.sendMessage({msg: "prevtab"});
         }
 
         else if(action == "closeback"){
-            chrome.extension.sendMessage({msg: "closeback"});
+            chrome.runtime.sendMessage({msg: "closeback"});
         }
 
 
@@ -288,11 +255,9 @@ function exeFunc()
 
 document.oncontextmenu = function()
 {
-    // console.log('ctx menu suppress is '+suppress)
     if(suppress)
         return false
     else{
-        // console.log("open it");
         suppress++
         return true
     }
@@ -300,34 +265,28 @@ document.oncontextmenu = function()
 
 function loadOptions(name)
 {
-    chrome.extension.sendMessage({msg: "colorCode"}, 
+    chrome.runtime.sendMessage({msg: "colorCode"},
         function(response) {
             if(response){
-                // console.log('color'+response.resp)
                 myColor = response.resp
             }
-            // else
-            //     console.log('error getting colorCode')
         });
-    chrome.extension.sendMessage({msg: "width"}, 
+    chrome.runtime.sendMessage({msg: "width"},
         function(response) {
             if(response){
                 myWidth = response.resp
-                // console.log('width '+myWidth)
             }
-            // else
-            //     console.log('error getting width')
         });
-    chrome.extension.sendMessage({msg: "gests"}, 
-        function(response) 
+    chrome.runtime.sendMessage({msg: "gests"},
+        function(response)
         {
             if(response)
                 myGests = response.resp
             ginv = invertHash(myGests)
         });
 
-    chrome.extension.sendMessage({msg: "rocker"}, 
-        function(response) 
+    chrome.runtime.sendMessage({msg: "rocker"},
+        function(response)
         {
             if(response)
                 rocker = response.resp
@@ -335,8 +294,8 @@ function loadOptions(name)
             else rocker = false
         });
 
-    chrome.extension.sendMessage({msg: "trail"}, 
-        function(response) 
+    chrome.runtime.sendMessage({msg: "trail"},
+        function(response)
         {
             if(response)
                 trail = response.resp

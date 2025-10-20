@@ -19,7 +19,7 @@
 chrome.tabs.onRemoved.addListener(
     function(tabId, removeInfo){
         chrome.tabs.get(tabId, function(tab){
-            x = tabId.toString()
+            var x = tabId.toString()
             chrome.storage.local.get(x,function(items){
                 chrome.storage.local.set({"lasturl":items[x].slice(9,items[x].length)},function (){});
                 chrome.storage.local.remove(x, function(Items){});
@@ -33,7 +33,7 @@ chrome.tabs.onUpdated.addListener(
         chrome.tabs.get(tabId, function(tab){
             var kk = tabId.toString()
             var x = {}
-            x[kk] += tab.url
+            x[kk] = tab.url
             chrome.storage.local.set(x,function(){});
         });
 
@@ -41,7 +41,7 @@ chrome.tabs.onUpdated.addListener(
 
 
 
-chrome.extension.onMessage.addListener(
+chrome.runtime.onMessage.addListener(
     function(request, sender, sendResponse) {
         if(request.msg == "newtab"){
             chrome.tabs.create({})
@@ -49,9 +49,10 @@ chrome.extension.onMessage.addListener(
         }
 
         if(request.msg == "closetab"){
-            chrome.tabs.getSelected(null, 
-            function(tab){
-                chrome.tabs.remove(tab.id);
+            chrome.tabs.query({active: true, currentWindow: true},
+            function(tabs){
+                if(tabs.length > 0)
+                    chrome.tabs.remove(tabs[0].id);
             });
             sendResponse({resp: "tab closed"});
         }
@@ -95,7 +96,7 @@ chrome.extension.onMessage.addListener(
 
         if(request.msg == "reloadall")
         {
-            chrome.tabs.getAllInWindow(null, 
+            chrome.tabs.query({currentWindow: true},
                 function(tabs) {
                     for(var i = 0; i < tabs.length; i++)
                         chrome.tabs.update(tabs[i].id, {url: tabs[i].url});
@@ -105,9 +106,11 @@ chrome.extension.onMessage.addListener(
 
     if(request.msg == "nexttab")
         {
-            chrome.tabs.getSelected(null, 
-                function(tab) {
-                    chrome.tabs.getAllInWindow(null, 
+            chrome.tabs.query({active: true, currentWindow: true},
+                function(activeTabs) {
+                    if(activeTabs.length == 0) return;
+                    var tab = activeTabs[0];
+                    chrome.tabs.query({currentWindow: true},
                         function(tabs) {
                             for(var i = 0; i < tabs.length; i++){
                                 if(tabs[i].id == tab.id){
@@ -125,11 +128,13 @@ chrome.extension.onMessage.addListener(
 
         if(request.msg == "prevtab")
         {
-            chrome.tabs.getSelected(null, 
-                function(tab) 
+            chrome.tabs.query({active: true, currentWindow: true},
+                function(activeTabs)
                 {
-                    chrome.tabs.getAllInWindow(null, 
-                        function(tabs) 
+                    if(activeTabs.length == 0) return;
+                    var tab = activeTabs[0];
+                    chrome.tabs.query({currentWindow: true},
+                        function(tabs)
                         {
                             for(var i = 0; i < tabs.length; i++)
                             {
@@ -149,11 +154,13 @@ chrome.extension.onMessage.addListener(
 
         if(request.msg == "closeback")
         {
-            chrome.tabs.getSelected(null, 
-                function(tab) 
+            chrome.tabs.query({active: true, currentWindow: true},
+                function(activeTabs)
                 {
-                    chrome.tabs.getAllInWindow(null, 
-                        function(tabs) 
+                    if(activeTabs.length == 0) return;
+                    var tab = activeTabs[0];
+                    chrome.tabs.query({currentWindow: true},
+                        function(tabs)
                         {
                             for(var i = 0; i < tabs.length; i++)
                             {
@@ -167,8 +174,8 @@ chrome.extension.onMessage.addListener(
 
         if(request.msg == "closeall")
         {
-            chrome.tabs.getAllInWindow(null, 
-                function(tabs) 
+            chrome.tabs.query({currentWindow: true},
+                function(tabs)
                 {
                 for(var i = 0; i < tabs.length; i++)
                 chrome.tabs.remove(tabs[i].id);
